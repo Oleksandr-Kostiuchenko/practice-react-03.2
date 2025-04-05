@@ -64,3 +64,9 @@
 .currency {
   color: var(--color-accent);
 }
+
+.baseTitle {
+  color: aliceblue;
+  font-size: 20px;
+  font-weight: 700;
+}
