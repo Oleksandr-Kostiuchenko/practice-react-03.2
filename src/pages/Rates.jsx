@@ -16,9 +16,9 @@ const Rates = () => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(setRates(baseCurrency));
-  }, [dispatch, baseCurrency]);
+  // useEffect(() => {
+  //   dispatch(setRates(baseCurrency));
+  // }, [dispatch, baseCurrency]);
 
   return (
     <Section>
