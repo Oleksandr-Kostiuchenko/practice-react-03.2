@@ -2,23 +2,29 @@
 import Section from '../components/Section/Section';
 import Container from '../components/Container/Container';
 import Heading from '../components/Heading/Heading';
+import Filter from '../components/Filter/Filter';
 import { Wave } from 'react-animated-text';
 
 //* Redux
-import { useDispatch, useSelector } from 'react-redux';
-import { selectBaseCurrency } from '../redux/currencySlice';
-import { setRates } from '../redux/operations';
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectBaseCurrency, selectRates } from '../redux/currencySlice';
+import { setRates } from '../redux/operations';
+import RatesList from '../components/RatesList/RatesList';
 
 const Rates = () => {
+  const dispatch = useDispatch();
+
   const isError = false;
   const baseCurrency = useSelector(selectBaseCurrency);
 
-  const dispatch = useDispatch();
+  useEffect(() => {
+    if (baseCurrency) {
+      dispatch(setRates(baseCurrency));
+    }
+  }, [dispatch, baseCurrency]);
 
-  // useEffect(() => {
-  //   dispatch(setRates(baseCurrency));
-  // }, [dispatch, baseCurrency]);
+  const ratesData = useSelector(selectRates);
 
   return (
     <Section>
@@ -34,6 +40,10 @@ const Rates = () => {
             />
           }
         />
+
+        <Filter />
+
+        {ratesData.length > 0 && <RatesList rates={ratesData} />}
 
         {isError && (
           <Heading

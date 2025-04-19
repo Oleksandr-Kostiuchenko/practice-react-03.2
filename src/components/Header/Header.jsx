@@ -10,6 +10,9 @@ import { Outlet, NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectBaseCurrency } from '../../redux/currencySlice';
 
+//* Components
+import SelectRates from '../SelectRates/SelectRates';
+
 const Header = () => {
   const addActive = ({ isActive }) => (isActive ? styles.active : styles.link);
   const baseCurrency = useSelector(selectBaseCurrency);
@@ -34,11 +37,9 @@ const Header = () => {
           </nav>
         </div>
         {baseCurrency && (
-          <p className={styles.baseTitle}>
-            {' '}
-            Your base currency: {baseCurrency}
-          </p>
+          <p className={styles.baseTitle}>Your base currency: {baseCurrency}</p>
         )}
+        {baseCurrency && <SelectRates baseCurrency={baseCurrency} />}
       </header>
       <Suspense fallback={null}>
         <Outlet />

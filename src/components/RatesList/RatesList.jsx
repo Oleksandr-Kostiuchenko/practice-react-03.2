@@ -1,7 +1,7 @@
+//* Components
+import styles from './RatesList.module.css';
 import Grid from '../Grid/Grid';
 import GridItem from '../GridItem/GridItem';
-
-import styles from './RatesList.module.css';
 
 const RatesList = ({ rates }) => {
   return (

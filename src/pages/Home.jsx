@@ -18,7 +18,6 @@ const Home = () => {
   const isError = useSelector(selectError);
   const isLoading = useSelector(selectIsLoading);
   const exchangeInfo = useSelector(selectExchangeData);
-  console.log(exchangeInfo);
 
   return (
     <Section>
@@ -36,12 +35,12 @@ const Home = () => {
           />
         )}
 
-        {isError && (
+        {/* {isError && (
           <Heading
             error
             title="Something went wrong...😐 Check the data validity and try again!"
           />
-        )}
+        )} */}
         {isLoading && <Loader />}
       </Container>
     </Section>

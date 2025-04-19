@@ -1,53 +1,147 @@
 //* Libraries
 import { RiExchangeDollarFill } from 'react-icons/ri';
+import { IoIosSwap } from 'react-icons/io';
 import styles from './ExchangeForm.module.css';
+import toast from 'react-hot-toast';
+import Select from 'react-select';
+import symbols from '../SelectRates/symbols.json';
 
 //* Redux
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setExchangeInfo } from '../../redux/operations';
+import { useState } from 'react';
+import { selectExchangeData } from '../../redux/currencySlice';
 
 const ExchangeForm = () => {
+  const exchangeData = useSelector(selectExchangeData);
+
+  const [fromCurrency, setFromCurrency] = useState({
+    label: 'USD',
+    value: 'USD',
+  });
+  const [toCurrency, setToCurrency] = useState({
+    label: 'UAH',
+    value: 'UAH',
+  });
+
   const dispatch = useDispatch();
 
   const onFormSubmit = event => {
     event.preventDefault();
 
     const form = event.target;
-    const inputValue = form.elements.userInput.value.trim('');
-    const inputValueObj = inputValue.split(' ');
+    const input = form.elements.userInput;
+    const fromSwitcher = form.elements.fromCurr;
+    const toSwitcher = form.elements.toCurr;
 
-    const regex = /^\d+(\.\d{1,2})?\s[a-zA-Z]{3}\sin\s[a-zA-Z]{3}$/;
-
-    if (!regex.test(inputValue)) {
-      alert('Invalid format! Please use the format: "15 USD in UAH".');
+    if (input.value <= 0) {
+      toast.error('Please enter valid number!');
       return;
     }
 
     const resultObj = {
-      to: inputValueObj[3],
-      from: inputValueObj[1],
-      amount: inputValueObj[0],
+      to: toSwitcher.value,
+      from: fromSwitcher.value,
+      amount: input.value,
     };
 
-    dispatch(setExchangeInfo(resultObj));
+    dispatch(setExchangeInfo(resultObj))
+      .unwrap()
+      .then(() => {
+        toast.success('Success!', {
+          duration: 3000,
+        });
+      })
+      .catch(() => {
+        toast.error('Error! Smth went wrong...', {
+          duration: 3000,
+        });
+      });
 
-    console.log('Succeess!', inputValue);
-    console.log(resultObj);
-    form.reset();
+    // form.reset();
+  };
+
+  const handleInvert = event => {
+    const form = event.target.closest('form');
+    const input = form.elements.userInput;
+
+    setFromCurrency(toCurrency);
+    setToCurrency(fromCurrency);
+
+    if (exchangeData) {
+      const resultObj = {
+        to: toCurrency.value,
+        from: fromCurrency.value,
+        amount: input.value,
+      };
+
+      dispatch(setExchangeInfo(resultObj))
+        .unwrap()
+        .then(() => {
+          toast.success('Success!', {
+            duration: 3000,
+          });
+        })
+        .catch(() => {
+          toast.error('Error! Smth went wrong...', {
+            duration: 3000,
+          });
+        });
+    }
+
+    toast.success('Successfully inverted!', {
+      duration: 3000,
+    });
   };
 
   return (
-    <form className={styles.form} onSubmit={onFormSubmit}>
-      <button className={styles.button} type="submit">
-        <RiExchangeDollarFill className={styles.icon} />
-      </button>
+    <>
+      <form className={styles.formWrapper} onSubmit={onFormSubmit}>
+        <div className={styles.switchersWrapper}>
+          <div className={styles.inputWrapper}>
+            <input
+              className={styles.inputNum}
+              name="userInput"
+              title="Request format 15 USD in UAH"
+              type="number"
+            />
+            <Select
+              value={fromCurrency}
+              onChange={selectedCurr => {
+                setFromCurrency(selectedCurr);
+              }}
+              className={styles.select}
+              name="fromCurr"
+              classNamePrefix="react-select"
+              options={symbols}
+              isSearchable
+            />
+          </div>
 
-      <input
-        name="userInput"
-        title="Request format 15 USD in UAH"
-        className={styles.input}
-      />
-    </form>
+          <div className={styles.buttonsWrapper}>
+            <button type="submit">
+              <RiExchangeDollarFill className={styles.icon} />
+            </button>
+
+            <button type="button" onClick={handleInvert}>
+              <IoIosSwap className={styles.icon} />
+            </button>
+          </div>
+
+          <Select
+            value={toCurrency}
+            onChange={selectedCurr => {
+              setToCurrency(selectedCurr);
+            }}
+            className={styles.select}
+            name="toCurr"
+            classNamePrefix="react-select"
+            options={symbols}
+            isSearchable
+          />
+        </div>
+      </form>
+    </>
   );
 };
 

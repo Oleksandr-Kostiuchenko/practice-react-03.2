@@ -3,6 +3,7 @@ import Heading from './components/Heading/Heading';
 import Header from './components/Header/Header';
 import Home from './pages/Home';
 import Rates from './pages/Rates';
+import toast, { Toaster } from 'react-hot-toast';
 
 //* Router
 import { Navigate, Route, Routes } from 'react-router-dom';
@@ -31,21 +32,23 @@ export const App = () => {
           },
         );
       } catch (error) {
-        alert('Sorry! Something went wrong!');
-        console.log(error);
+        toast.error('Sorry! Something went wrong!', {
+          duration: 5000,
+        });
       }
     }
 
     function error() {
-      dispatch(setDefaultCurrency());
+      dispatch(setDefaultCurrency('USD'));
     }
 
     navigator.geolocation.getCurrentPosition(success, error, options);
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
       <Header />
+      <Toaster position="bottom-center" reverseOrder={false} />
 
       <Routes>
         <Route path="/" element={<Home />} />

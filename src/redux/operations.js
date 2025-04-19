@@ -38,13 +38,25 @@ export const setExchangeInfo = createAsyncThunk(
   },
 );
 
+// export const setRates = createAsyncThunk(
+//   'rates/setRates',
+//   async (baseCurrency, thunkAPI) => {
+//     try {
+//       const response = latestRates(baseCurrency);
+
+//       return response;
+//     } catch (error) {
+//       return thunkAPI.rejectWithValue(error.message);
+//     }
+//   },
+// );
+
 export const setRates = createAsyncThunk(
   'rates/setRates',
   async (baseCurrency, thunkAPI) => {
     try {
-      const response = latestRates(baseCurrency);
+      const response = await latestRates(baseCurrency);
 
-      console.log(response);
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
